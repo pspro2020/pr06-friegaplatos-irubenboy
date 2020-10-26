@@ -15,16 +15,18 @@ public class DryTray {
     public Plate extractDryPlate() throws InterruptedException {
         Plate p;
 
-        while (dryPlates.isEmpty()){
-            System.out.printf("Organizer waiting to extract a dry plate %s\n",
-                    LocalDateTime.now().format(formatter));
-            wait();
-        }
+        synchronized(this) {
+            while (dryPlates.isEmpty()) {
+                System.out.printf("Organizer waiting to extract a dry plate %s\n",
+                        LocalDateTime.now().format(formatter));
+                wait();
+            }
 
-        p = dryPlates.remove(0); // Coge el primer plato
-        System.out.printf("Organizer extract a plate #%d from dry plate %s\n", p.getId(),
-                LocalDateTime.now().format(formatter));
-        notifyAll();
-        return p;
+            p = dryPlates.remove(0); // Coge el primer plato
+            System.out.printf("Organizer extract a plate #%d from dry plate %s\n", p.getId(),
+                    LocalDateTime.now().format(formatter));
+            notifyAll();
+            return p;
+        }
     }
 }

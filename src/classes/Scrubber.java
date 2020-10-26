@@ -26,6 +26,7 @@ public class Scrubber implements Runnable{
     public void run() {
         Plate p;
 
+
         while(!Thread.currentThread().isInterrupted()){
             try {
                 p = dirtyTray.extractPlate();

@@ -16,16 +16,18 @@ public class CleanTray {
     public Plate extractCleanPlate() throws InterruptedException {
         Plate p;
 
-        while (cleanPlates.isEmpty()){
-            System.out.printf("Dryer waiting to extract a clean plate %s\n",
+        synchronized(this) {
+            while (cleanPlates.isEmpty()) {
+                System.out.printf("Dryer waiting to extract a clean plate %s\n",
+                        LocalDateTime.now().format(formatter));
+                wait();
+            }
+            p = cleanPlates.remove(0); // coge el primer plato limpio
+            System.out.printf("Dyer extract a plate #%d from clean tray %s\n", p.getId(),
                     LocalDateTime.now().format(formatter));
-            wait();
-        }
-        p = cleanPlates.remove(0); // coge el primer plato limpio
-        System.out.printf("Dyer extract a plate #%d from clean tray %s\n", p.getId(),
-                LocalDateTime.now().format(formatter));
-        notify();
+            notify();
 
-        return p;
+            return p;
+        }
     }
 }
